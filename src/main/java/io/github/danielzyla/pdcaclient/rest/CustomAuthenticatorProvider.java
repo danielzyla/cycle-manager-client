@@ -2,6 +2,7 @@ package io.github.danielzyla.pdcaclient.rest;
 
 import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.UserWriteDto;
+import io.github.danielzyla.pdcaclient.handler.AuthenticationResultHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 

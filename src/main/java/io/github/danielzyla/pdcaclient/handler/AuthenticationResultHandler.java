@@ -1,4 +1,4 @@
-package io.github.danielzyla.pdcaclient.rest;
+package io.github.danielzyla.pdcaclient.handler;
 
 import java.io.IOException;
 

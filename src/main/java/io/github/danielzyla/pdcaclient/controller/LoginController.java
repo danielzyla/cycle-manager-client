@@ -79,11 +79,12 @@ public class LoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/io/github/danielzyla/pdcaclient/fxml/main-view.fxml"
             ));
-            loader.setController(new MainController(token));
             Parent appRoot = loader.load();
             Scene scene = new Scene(appRoot, 1024, 768);
             appStage.setTitle("pdca-App");
             appStage.setScene(scene);
+            MainController controller = loader.getController();
+            controller.setToken(token);
             appStage.show();
         } catch (IOException e) {
             e.printStackTrace();

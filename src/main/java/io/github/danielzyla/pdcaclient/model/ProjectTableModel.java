@@ -2,6 +2,7 @@ package io.github.danielzyla.pdcaclient.model;
 
 import io.github.danielzyla.pdcaclient.dto.ProjectReadDto;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProjectTableModel {
+    private final SimpleLongProperty id;
     private final SimpleObjectProperty<LocalDateTime> startTime;
     private final SimpleStringProperty projectName;
     private final SimpleStringProperty projectCode;
@@ -19,6 +21,7 @@ public class ProjectTableModel {
     private final SimpleObjectProperty<LocalDateTime> endTime;
 
     public ProjectTableModel(ProjectReadDto projectReadDto) {
+        this.id = new SimpleLongProperty(projectReadDto.getId());
         this.startTime = new SimpleObjectProperty<>(projectReadDto.getStartTime());
         this.projectName = new SimpleStringProperty(projectReadDto.getProjectName());
         this.projectCode = new SimpleStringProperty(projectReadDto.getProjectCode());
@@ -29,7 +32,19 @@ public class ProjectTableModel {
         this.endTime = new SimpleObjectProperty<>(projectReadDto.getEndTime());
     }
 
-    LocalDateTime getStartTime() {
+    public long getId() {
+        return id.get();
+    }
+
+    public SimpleLongProperty idProperty() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id.set(id);
+    }
+
+    public LocalDateTime getStartTime() {
         return startTime.get();
     }
 
@@ -41,7 +56,7 @@ public class ProjectTableModel {
         this.startTime.set(startTime);
     }
 
-    String getProjectName() {
+    public String getProjectName() {
         return projectName.get();
     }
 
@@ -53,7 +68,7 @@ public class ProjectTableModel {
         this.projectName.set(projectName);
     }
 
-    String getProjectCode() {
+    public String getProjectCode() {
         return projectCode.get();
     }
 
@@ -65,7 +80,7 @@ public class ProjectTableModel {
         this.projectCode.set(projectCode);
     }
 
-    boolean isComplete() {
+    public boolean isComplete() {
         return complete.get();
     }
 
@@ -77,7 +92,7 @@ public class ProjectTableModel {
         this.complete.set(complete);
     }
 
-    LocalDateTime getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime.get();
     }
 
@@ -89,7 +104,7 @@ public class ProjectTableModel {
         this.endTime.set(endTime);
     }
 
-    List<Department> getDepartments() {
+    public List<Department> getDepartments() {
         return departments.get();
     }
 
@@ -101,7 +116,7 @@ public class ProjectTableModel {
         this.departments.set(departments);
     }
 
-    List<Product> getProducts() {
+    public List<Product> getProducts() {
         return products.get();
     }
 
@@ -113,7 +128,7 @@ public class ProjectTableModel {
         this.products.set(products);
     }
 
-    List<Cycle> getCycles() {
+    public List<Cycle> getCycles() {
         return cycles.get();
     }
 
