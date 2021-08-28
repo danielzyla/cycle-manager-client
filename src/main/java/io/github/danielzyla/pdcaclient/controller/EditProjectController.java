@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -26,6 +23,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EditProjectController implements Initializable {
 
@@ -53,7 +52,8 @@ public class EditProjectController implements Initializable {
     private final ProductRestClient productRestClient;
     private String token;
     private ProjectTableModel selectedProject;
-    private MainController mainController;
+    private ProjectListViewController projectListViewController;
+    private final static Pattern PATTERN = Pattern.compile("\\A(?!\\s*\\Z).+");
 
     public EditProjectController() {
         this.departmentRestClient = new DepartmentRestClient();
@@ -77,31 +77,33 @@ public class EditProjectController implements Initializable {
 
     private void initializeEditButton() {
         editButton.setOnAction(editAction -> {
-            ProjectWriteApiDto projectWriteApiDto = new ProjectWriteApiDto();
-            projectWriteApiDto.setId(selectedProject.getId());
-            projectWriteApiDto.setProjectName(projectNameTextField.getText());
-            projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
-            projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
-            projectWriteApiDto.setProductsIds(getProductsIds());
-            Thread thread = new Thread(() -> {
-                try {
-                    projectRestClient.updateProject(
-                            getToken(),
-                            projectWriteApiDto,
-                            () -> Platform.runLater(() -> {
-                                getStage().close();
-                                try {
-                                    this.mainController.refreshProjectList();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            })
-                    );
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
+            if (validateProjectName() && validateProjectCode()) {
+                ProjectWriteApiDto projectWriteApiDto = new ProjectWriteApiDto();
+                projectWriteApiDto.setId(selectedProject.getId());
+                projectWriteApiDto.setProjectName(projectNameTextField.getText());
+                projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
+                projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
+                projectWriteApiDto.setProductsIds(getProductsIds());
+                Thread thread = new Thread(() -> {
+                    try {
+                        projectRestClient.updateProject(
+                                getToken(),
+                                projectWriteApiDto,
+                                () -> Platform.runLater(() -> {
+                                    getStage().close();
+                                    try {
+                                        this.projectListViewController.refreshProjectList();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                })
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                thread.start();
+            }
         });
     }
 
@@ -127,7 +129,6 @@ public class EditProjectController implements Initializable {
         departmentListButton.setOnAction(loadDepartments -> {
             Thread thread = new Thread(() -> {
                 try {
-                    System.out.println(getToken());
                     List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(getToken());
                     Platform.runLater(() -> {
                         departmentsListView.setItems(FXCollections.observableArrayList(departmentReadDtoList));
@@ -135,19 +136,52 @@ public class EditProjectController implements Initializable {
                         ObservableList<DepartmentReadDto> items = departmentsListView.getItems();
                         for (DepartmentReadDto item : items) {
                             for (Department dept : selectedProject.getDepartments()) {
-                                if(dept.getId() == item.getId()) {
+                                if (dept.getId() == item.getId()) {
                                     departmentsListView.getSelectionModel().select(item);
                                 }
                             }
-
                         }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
+            thread.setDaemon(true);
             thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
+    }
+
+    private boolean validateProjectName() {
+        Matcher matcher = PATTERN.matcher(projectNameTextField.getText());
+        if (matcher.find() && matcher.group().equals(projectNameTextField.getText())) {
+            return true;
+        } else {
+            validationAlert("project name");
+            return false;
+        }
+    }
+
+    private boolean validateProjectCode() {
+        Matcher matcher = PATTERN.matcher(projectCodeTextField.getText());
+        if (matcher.find() && matcher.group().equals(projectCodeTextField.getText())) {
+            return true;
+        } else {
+            validationAlert("project code");
+            return false;
+        }
+    }
+
+    private void validationAlert(String parameter) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Validate " + parameter);
+        alert.setContentText("Please enter valid " + parameter);
+        alert.showAndWait();
     }
 
     private void loadProductList() {
@@ -161,7 +195,7 @@ public class EditProjectController implements Initializable {
                         ObservableList<ProductReadDto> items = productsListView.getItems();
                         for (ProductReadDto item : items) {
                             for (Product product : selectedProject.getProducts()) {
-                                if(product.getId() == item.getId()) {
+                                if (product.getId() == item.getId()) {
                                     productsListView.getSelectionModel().select(item);
                                 }
                             }
@@ -191,7 +225,7 @@ public class EditProjectController implements Initializable {
         return token;
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setController(ProjectListViewController projectListViewController) {
+        this.projectListViewController = projectListViewController;
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane fx:id="mainAppBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.danielzyla.pdcaclient.controller.MainController">
+   <top>
+       <MenuBar styleClass="menuBar" BorderPane.alignment="CENTER">
+           <stylesheets>
+               <URL value="@../css/main-view.css"/>
+               <URL value="@../css/global-colors.css"/>
+           </stylesheets>
+           <Menu mnemonicParsing="false" text="File">
+               <Menu mnemonicParsing="false" text="Open...">
+                   <MenuItem fx:id="openProjectListMenuItem" mnemonicParsing="false" text="Project module"/>
+                   <MenuItem fx:id="openProductListMenuItem" mnemonicParsing="false" text="Product module"/>
+                   <MenuItem fx:id="openDepartmentListMenuItem" mnemonicParsing="false"
+                             text="Department module"/>
+                   <MenuItem fx:id="openEmployeeListMenuItem" mnemonicParsing="false" text="Employee module"/>
+               </Menu>
+               <MenuItem fx:id="quitAppMenuItem" mnemonicParsing="false" text="Close"/>
+           </Menu>
+       </MenuBar>
+   </top>
+   <center>
+      <Pane fx:id="viewPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

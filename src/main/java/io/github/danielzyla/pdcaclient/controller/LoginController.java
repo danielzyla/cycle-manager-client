@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -28,7 +29,7 @@ public class LoginController implements Initializable {
     @FXML
     private TextField usernameTextField;
     @FXML
-    private TextField passwordTextField;
+    private PasswordField passwordTextField;
     @FXML
     private Button loginButton;
 
@@ -77,7 +78,7 @@ public class LoginController implements Initializable {
         Stage appStage = new Stage();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/io/github/danielzyla/pdcaclient/fxml/main-view.fxml"
+                    "/io/github/danielzyla/pdcaclient/fxml/main-app-view.fxml"
             ));
             Parent appRoot = loader.load();
             Scene scene = new Scene(appRoot, 1024, 768);

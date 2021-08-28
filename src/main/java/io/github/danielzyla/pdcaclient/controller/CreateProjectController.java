@@ -11,10 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -23,6 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CreateProjectController implements Initializable {
 
@@ -49,7 +48,8 @@ public class CreateProjectController implements Initializable {
     private final DepartmentRestClient departmentRestClient;
     private final ProductRestClient productRestClient;
     private String token;
-    private MainController mainController;
+    private ProjectListViewController projectListViewController;
+    private final static Pattern PATTERN = Pattern.compile("\\A(?!\\s*\\Z).+");
 
     public CreateProjectController() {
         this.departmentRestClient = new DepartmentRestClient();
@@ -81,31 +81,63 @@ public class CreateProjectController implements Initializable {
 
     private void initializeSaveButton() {
         saveButton.setOnAction(saveAction -> {
-            ProjectWriteApiDto projectWriteApiDto = new ProjectWriteApiDto();
-            projectWriteApiDto.setProjectName(projectNameTextField.getText());
-            projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
-            projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
-            projectWriteApiDto.setProductsIds(getProductsIds());
-            Thread thread = new Thread(() -> {
+            if (validateProjectName() && validateProjectCode()) {
+                ProjectWriteApiDto projectWriteApiDto = new ProjectWriteApiDto();
+                projectWriteApiDto.setProjectName(projectNameTextField.getText());
+                projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
+                projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
+                projectWriteApiDto.setProductsIds(getProductsIds());
+                Thread thread = new Thread(() -> {
+                    try {
+                        projectRestClient.saveProject(getToken(), projectWriteApiDto, () -> Platform.runLater(() -> {
+                            getStage().close();
+                            try {
+                                this.projectListViewController.refreshProjectList();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                thread.setDaemon(true);
+                thread.start();
                 try {
-                    projectRestClient.saveProject(
-                            getToken(),
-                            projectWriteApiDto,
-                            () -> Platform.runLater(() -> {
-                                getStage().close();
-                                try {
-                                    this.mainController.refreshProjectList();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            })
-                    );
-                } catch (IOException e) {
+                    thread.join();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            });
-            thread.start();
+            }
         });
+    }
+
+    private boolean validateProjectName() {
+        Matcher matcher = PATTERN.matcher(projectNameTextField.getText());
+        if (matcher.find() && matcher.group().equals(projectNameTextField.getText())) {
+            return true;
+        } else {
+            validationAlert("project name");
+            return false;
+        }
+    }
+
+    private boolean validateProjectCode() {
+        Matcher matcher = PATTERN.matcher(projectCodeTextField.getText());
+        if (matcher.find() && matcher.group().equals(projectCodeTextField.getText())) {
+            return true;
+        } else {
+            validationAlert("project code");
+            return false;
+        }
+    }
+
+    private void validationAlert(String parameter) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Validate " + parameter);
+        alert.setContentText("Please enter valid " + parameter);
+        alert.showAndWait();
     }
 
     private List<Integer> getDepartmentsIds() {
@@ -172,7 +204,7 @@ public class CreateProjectController implements Initializable {
         return token;
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setController(ProjectListViewController projectListViewController) {
+        this.projectListViewController = projectListViewController;
     }
 }

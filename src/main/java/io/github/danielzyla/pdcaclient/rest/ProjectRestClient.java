@@ -59,13 +59,15 @@ public class ProjectRestClient {
     public void deleteProject(String token, Long projectId, DeleteProjectHandler handler) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        restTemplate.exchange(
+        ResponseEntity<Void> response = restTemplate.exchange(
                 PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH + "?id=" + projectId,
                 HttpMethod.DELETE,
                 request,
-                ResponseEntity.class
+                Void.class
         );
-        handler.handle();
+        if (response.getStatusCode().equals(HttpStatus.OK)) {
+            handler.handle();
+        }
     }
 
     public void updateProject(
@@ -75,11 +77,14 @@ public class ProjectRestClient {
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
-        restTemplate.exchange(PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH,
+        ResponseEntity<Void> response = restTemplate.exchange(
+                PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH,
                 HttpMethod.PUT,
                 request,
-                ResponseEntity.class
+                Void.class
         );
-        handler.handle();
+        if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+            handler.handle();
+        }
     }
 }

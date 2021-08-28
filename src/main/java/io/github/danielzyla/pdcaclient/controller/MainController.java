@@ -1,311 +1,127 @@
 package io.github.danielzyla.pdcaclient.controller;
 
-import io.github.danielzyla.pdcaclient.model.Cycle;
-import io.github.danielzyla.pdcaclient.model.Department;
-import io.github.danielzyla.pdcaclient.model.Product;
-import io.github.danielzyla.pdcaclient.model.ProjectTableModel;
-import io.github.danielzyla.pdcaclient.rest.ProjectRestClient;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
 
-    private final ProjectRestClient projectRestClient;
+    private final static String VIEW_FXML_PATH = "/io/github/danielzyla/pdcaclient/fxml";
     private String token;
+    private final ProjectListViewController projectListViewController;
+    private final ProductListViewController productListViewController;
+    private final DepartmentListViewController departmentListViewController;
+    private final EmployeeListViewController employeeListViewController;
+
+    @FXML
+    private BorderPane mainAppBorderPane;
     @FXML
     private MenuItem openProjectListMenuItem;
     @FXML
-    private MenuItem createNewProjectMenuItem;
+    private MenuItem openProductListMenuItem;
     @FXML
-    private ScrollPane projectListScrollPane;
+    private MenuItem openDepartmentListMenuItem;
     @FXML
-    private TableView<ProjectTableModel> projectListTableView;
+    private MenuItem openEmployeeListMenuItem;
     @FXML
-    private Button editButton;
+    private Pane viewPane;
     @FXML
-    private Button deleteButton;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private Button exitButton;
+    private MenuItem quitAppMenuItem;
 
     public MainController() {
-        this.projectRestClient = new ProjectRestClient();
+        this.projectListViewController = new ProjectListViewController();
+        this.productListViewController = new ProductListViewController();
+        this.departmentListViewController = new DepartmentListViewController();
+        this.employeeListViewController = new EmployeeListViewController();
     }
 
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
-        createNewProjectMenuItem.setOnAction(createProjectAction -> initializeCreateNewProjectMenuItem());
-        openProjectListMenuItem.setOnAction(openProjectListAction -> {
-            try {
-                initializeOpenProjectListMenuItem();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        setControlLabelsOfStage(false);
+        initializeChosenMenuItem();
+        quitAppMenuItem.setOnAction(closeApp -> getStage().close());
     }
 
-    private void initializeCreateNewProjectMenuItem() {
+    private void initializeChosenMenuItem() {
+        openProjectListMenuItem.setOnAction(openProjectList -> loadProjectListView());
+        openProductListMenuItem.setOnAction((openProductList -> loadProductListView()));
+        openDepartmentListMenuItem.setOnAction(openDepartmentList -> loadDepartmentListView());
+        openEmployeeListMenuItem.setOnAction(openEmployeeList -> loadEmployeeListView());
+    }
+
+    private void loadProjectListView() {
+        viewPane.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_FXML_PATH + "/project-list-view.fxml"));
+        loader.setController(projectListViewController);
+        projectListViewController.setToken(getToken());
+        BorderPane borderPane = null;
         try {
-            Stage createProjectStage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/io/github/danielzyla/pdcaclient/fxml/add-project.fxml"
-            ));
-            Parent parent = loader.load();
-            Scene scene = new Scene(parent, 600, 500);
-            createProjectStage.setScene(scene);
-            createProjectStage.initModality(Modality.APPLICATION_MODAL);
-            createProjectStage.initStyle(StageStyle.UNDECORATED);
-            CreateProjectController controller = loader.getController();
-            controller.setToken(getToken());
-            controller.setMainController(this);
-            createProjectStage.show();
+            borderPane = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        viewPane.getChildren().add(borderPane);
+        assert borderPane != null;
+        borderPane.prefWidthProperty().bind(viewPane.widthProperty());
+        borderPane.prefHeightProperty().bind(viewPane.heightProperty());
     }
 
-    public void initializeOpenProjectListMenuItem() throws InterruptedException {
-        setProjectListTableView();
-        nameLabel.setText("Project list");
-        setControlLabelsOfStage(true);
-        projectListScrollPane.setVisible(true);
-        openProjectListMenuItem.setDisable(true);
-        editButton.setOnAction(editAction -> initializeEditProjectStage());
-        deleteButton.setOnAction(deleteAction -> initializeDeleteProjectStage());
-        exitButton.setOnAction(exitAction -> initializeExitProjectListStage());
-    }
-
-    private void setProjectListTableView() throws InterruptedException {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        TableColumn<ProjectTableModel, LocalDateTime> startTimeColumn = new TableColumn<>("Start time");
-        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-        startTimeColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalDateTime item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    setText(dateTimeFormatter.format(item));
-                }
-            }
-        });
-
-        TableColumn<ProjectTableModel, String> projectNameColumn = new TableColumn<>("Project name");
-        projectNameColumn.setCellValueFactory(new PropertyValueFactory<>("projectName"));
-
-        TableColumn<ProjectTableModel, String> projectCodeColumn = new TableColumn<>("Project code");
-        projectCodeColumn.setCellValueFactory(new PropertyValueFactory<>("projectCode"));
-
-        TableColumn<ProjectTableModel, List<Department>> departmentsColumn = new TableColumn<>("Departments");
-        departmentsColumn.setCellValueFactory(new PropertyValueFactory<>("departments"));
-        departmentsColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(List<Department> departments, boolean empty) {
-                super.updateItem(departments, empty);
-                if (departments == null || empty) {
-                    setText(null);
-                } else {
-                    setText(
-                            departments.stream()
-                                    .map(Department::getDeptName)
-                                    .sorted()
-                                    .collect(Collectors.joining("\n"))
-                    );
-                }
-            }
-        });
-
-        TableColumn<ProjectTableModel, List<Product>> productsColumn = new TableColumn<>("Products");
-        productsColumn.setCellValueFactory(new PropertyValueFactory<>("products"));
-        productsColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(List<Product> products, boolean empty) {
-                super.updateItem(products, empty);
-                if (products == null || empty) {
-                    setText(null);
-                } else {
-                    setText(
-                            products.stream()
-                                    .map(Product::getProductName)
-                                    .sorted()
-                                    .collect(Collectors.joining("\n"))
-                    );
-                }
-            }
-        });
-
-        TableColumn<ProjectTableModel, List<Cycle>> cyclesColumn = new TableColumn<>("Cycles");
-        cyclesColumn.setCellValueFactory(new PropertyValueFactory<>("cycles"));
-        cyclesColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(List<Cycle> cycles, boolean empty) {
-                super.updateItem(cycles, empty);
-                if (cycles == null || empty) {
-                    setText(null);
-                } else {
-                    setText(
-                            cycles.stream()
-                                    .map(cycle -> cycle.getCycleName()
-                                            + " started: " + dateTimeFormatter.format(cycle.getStartTime()))
-                                    .sorted()
-                                    .collect(Collectors.joining("\n"))
-                    );
-                }
-            }
-        });
-
-        TableColumn<ProjectTableModel, Boolean> completeColumn = new TableColumn<>("Complete");
-        completeColumn.setCellValueFactory(new PropertyValueFactory<>("complete"));
-        completeColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else if (item) {
-                    setText("yes");
-                } else {
-                    setText("no");
-                }
-            }
-        });
-
-        TableColumn<ProjectTableModel, LocalDateTime> endTimeColumn = new TableColumn<>("End time");
-        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-        endTimeColumn.setCellFactory(column -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalDateTime item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    setText(dateTimeFormatter.format(item));
-                }
-            }
-        });
-
-        projectListTableView.getColumns().addAll(
-                startTimeColumn,
-                projectNameColumn,
-                projectCodeColumn,
-                departmentsColumn,
-                productsColumn,
-                cyclesColumn,
-                completeColumn,
-                endTimeColumn
-        );
-
-        ObservableList<ProjectTableModel> data = FXCollections.observableArrayList();
-        loadProjectData(data);
-        projectListTableView.setItems(data);
-    }
-
-
-    public void loadProjectData(final ObservableList<ProjectTableModel> data) throws InterruptedException {
-        Thread thread = new Thread(() -> {
-            try {
-                data.addAll(
-                        projectRestClient.getProjects(getToken()).stream()
-                                .map(ProjectTableModel::new)
-                                .collect(Collectors.toList())
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-        thread.join();
-    }
-
-    private void initializeExitProjectListStage() {
-        projectListTableView.getItems().clear();
-        projectListTableView.getColumns().clear();
-        projectListScrollPane.setVisible(false);
-        openProjectListMenuItem.setDisable(false);
-        setControlLabelsOfStage(false);
-    }
-
-    private void initializeEditProjectStage() {
-        ProjectTableModel selectedProject = projectListTableView.getSelectionModel().getSelectedItem();
-        if (selectedProject != null) {
-            try {
-                Stage editProjectStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                        "/io/github/danielzyla/pdcaclient/fxml/edit-project.fxml"
-                ));
-                Parent parent = loader.load();
-                Scene scene = new Scene(parent, 600, 500);
-                editProjectStage.setScene(scene);
-                editProjectStage.initModality(Modality.APPLICATION_MODAL);
-                editProjectStage.initStyle(StageStyle.UNDECORATED);
-                EditProjectController controller = loader.getController();
-                controller.setToken(getToken());
-                controller.loadProjectWriteApiDto(selectedProject);
-                controller.setMainController(this);
-                editProjectStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void loadProductListView() {
+        viewPane.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_FXML_PATH + "/product-list-view.fxml"));
+        loader.setController(productListViewController);
+        productListViewController.setToken(getToken());
+        BorderPane borderPane = null;
+        try {
+            borderPane = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        viewPane.getChildren().add(borderPane);
+        assert borderPane != null;
+        borderPane.prefWidthProperty().bind(viewPane.widthProperty());
+        borderPane.prefHeightProperty().bind(viewPane.heightProperty());
     }
 
-    private void initializeDeleteProjectStage() {
-        ProjectTableModel selectedProject = projectListTableView.getSelectionModel().getSelectedItem();
-        if (selectedProject != null) {
-            try {
-                Stage deleteProjectStage = new Stage();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                        "/io/github/danielzyla/pdcaclient/fxml/delete-project.fxml"
-                ));
-                Parent parent = loader.load();
-                Scene scene = new Scene(parent, 400, 250);
-                deleteProjectStage.setScene(scene);
-                deleteProjectStage.initModality(Modality.APPLICATION_MODAL);
-                deleteProjectStage.initStyle(StageStyle.UNDECORATED);
-                DeleteProjectController controller = loader.getController();
-                controller.setToken(getToken());
-                controller.loadProjectData(selectedProject);
-                controller.setMainController(this);
-                deleteProjectStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void loadDepartmentListView() {
+        viewPane.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_FXML_PATH + "/department-list-view.fxml"));
+        loader.setController(departmentListViewController);
+        departmentListViewController.setToken(getToken());
+        BorderPane borderPane = null;
+        try {
+            borderPane = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        viewPane.getChildren().add(borderPane);
+        assert borderPane != null;
+        borderPane.prefWidthProperty().bind(viewPane.widthProperty());
+        borderPane.prefHeightProperty().bind(viewPane.heightProperty());
     }
 
-    public void refreshProjectList() throws InterruptedException {
-        initializeExitProjectListStage();
-        initializeOpenProjectListMenuItem();
-    }
-
-    private void setControlLabelsOfStage(Boolean stageStatus) {
-        editButton.setVisible(stageStatus);
-        deleteButton.setVisible(stageStatus);
-        exitButton.setVisible(stageStatus);
-        if (!stageStatus) nameLabel.setText("");
+    private void loadEmployeeListView() {
+        viewPane.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_FXML_PATH + "/employee-list-view.fxml"));
+        loader.setController(employeeListViewController);
+        employeeListViewController.setToken(getToken());
+        BorderPane borderPane = null;
+        try {
+            borderPane = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        viewPane.getChildren().add(borderPane);
+        assert borderPane != null;
+        borderPane.prefWidthProperty().bind(viewPane.widthProperty());
+        borderPane.prefHeightProperty().bind(viewPane.heightProperty());
     }
 
     String getToken() {
@@ -314,6 +130,10 @@ public class MainController implements Initializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    private Stage getStage() {
+        return (Stage) mainAppBorderPane.getScene().getWindow();
     }
 
 }
