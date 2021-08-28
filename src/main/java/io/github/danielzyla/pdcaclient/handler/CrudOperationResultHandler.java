@@ -1,6 +1,6 @@
 package io.github.danielzyla.pdcaclient.handler;
 
 @FunctionalInterface
-public interface ProductDeleteHandler {
+public interface CrudOperationResultHandler {
     void handle();
 }

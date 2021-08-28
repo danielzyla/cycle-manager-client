@@ -4,9 +4,7 @@ package io.github.danielzyla.pdcaclient.rest;
 import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.ProjectReadDto;
 import io.github.danielzyla.pdcaclient.dto.ProjectWriteApiDto;
-import io.github.danielzyla.pdcaclient.handler.DeleteProjectHandler;
-import io.github.danielzyla.pdcaclient.handler.EditProjectHandler;
-import io.github.danielzyla.pdcaclient.handler.SaveProjectHandler;
+import io.github.danielzyla.pdcaclient.handler.CrudOperationResultHandler;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,7 +39,7 @@ public class ProjectRestClient {
     public void saveProject(
             String token,
             ProjectWriteApiDto projectWriteApiDto,
-            SaveProjectHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
@@ -56,7 +54,7 @@ public class ProjectRestClient {
         } else throw new RuntimeException("can't save data transfer object: " + projectWriteApiDto);
     }
 
-    public void deleteProject(String token, Long projectId, DeleteProjectHandler handler) throws IOException {
+    public void deleteProject(String token, Long projectId, CrudOperationResultHandler handler) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -73,7 +71,7 @@ public class ProjectRestClient {
     public void updateProject(
             String token,
             ProjectWriteApiDto projectWriteApiDto,
-            EditProjectHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);

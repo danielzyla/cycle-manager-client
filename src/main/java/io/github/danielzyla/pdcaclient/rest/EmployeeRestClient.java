@@ -4,9 +4,7 @@ package io.github.danielzyla.pdcaclient.rest;
 import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.EmployeeReadDto;
 import io.github.danielzyla.pdcaclient.dto.EmployeeWriteApiDto;
-import io.github.danielzyla.pdcaclient.handler.DeleteEmployeeHandler;
-import io.github.danielzyla.pdcaclient.handler.EditEmployeeHandler;
-import io.github.danielzyla.pdcaclient.handler.SaveEmployeeHandler;
+import io.github.danielzyla.pdcaclient.handler.CrudOperationResultHandler;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,7 +39,7 @@ public class EmployeeRestClient {
     public void saveEmployee(
             String token,
             EmployeeWriteApiDto employeeWriteApiDto,
-            SaveEmployeeHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<EmployeeWriteApiDto> request = new HttpEntity<>(employeeWriteApiDto, headers);
@@ -56,7 +54,7 @@ public class EmployeeRestClient {
         } else throw new RuntimeException("can't save data transfer object: " + employeeWriteApiDto);
     }
 
-    public void deleteEmployee(String token, Long employeeId, DeleteEmployeeHandler handler) throws IOException {
+    public void deleteEmployee(String token, Long employeeId, CrudOperationResultHandler handler) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -73,7 +71,7 @@ public class EmployeeRestClient {
     public void updateEmployee(
             String token,
             EmployeeWriteApiDto employeeWriteApiDto,
-            EditEmployeeHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<EmployeeWriteApiDto> request = new HttpEntity<>(employeeWriteApiDto, headers);

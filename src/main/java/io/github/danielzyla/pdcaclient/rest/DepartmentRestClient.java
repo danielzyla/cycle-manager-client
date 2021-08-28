@@ -3,10 +3,11 @@ package io.github.danielzyla.pdcaclient.rest;
 import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.DepartmentReadDto;
 import io.github.danielzyla.pdcaclient.dto.DepartmentWriteDto;
-import io.github.danielzyla.pdcaclient.handler.DepartmentDeleteHandler;
-import io.github.danielzyla.pdcaclient.handler.DepartmentSaveHandler;
-import io.github.danielzyla.pdcaclient.handler.EditDepartmentHandler;
+import io.github.danielzyla.pdcaclient.handler.CrudOperationResultHandler;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -26,7 +27,6 @@ public class DepartmentRestClient {
     }
 
     public List<DepartmentReadDto> getDepartments(String token) throws IOException {
-        System.out.println(token);
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<DepartmentReadDto[]> departmentResponseEntity = restTemplate.exchange(
@@ -41,7 +41,7 @@ public class DepartmentRestClient {
     public DepartmentReadDto saveDepartment(
             String token,
             DepartmentWriteDto departmentWriteDto,
-            DepartmentSaveHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<DepartmentWriteDto> request = new HttpEntity<>(departmentWriteDto, headers);
@@ -57,24 +57,34 @@ public class DepartmentRestClient {
         return departmentReadDtoResponseEntity.getBody();
     }
 
-    public void removeDepartment(String token, int departmentId, DepartmentDeleteHandler handler) throws IOException {
+    public void removeDepartment(String token, int departmentId, CrudOperationResultHandler handler) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<Void> response = restTemplate.exchange(
-                PropertyProvider.getRestAppUrl() + DEPARTMENTS_URL_PATH + "?id=" + departmentId,
-                HttpMethod.DELETE,
-                request,
-                Void.class
-        );
-        if (response.getStatusCode().equals(HttpStatus.OK)) {
-            handler.handle();
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                    PropertyProvider.getRestAppUrl() + DEPARTMENTS_URL_PATH + "?id=" + departmentId,
+                    HttpMethod.DELETE,
+                    request,
+                    Void.class
+            );
+            if (response.getStatusCode().equals(HttpStatus.OK)) {
+                handler.handle();
+            }
+        } catch (HttpClientErrorException.Conflict e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Conflict !");
+                alert.setHeaderText(null);
+                alert.setContentText("Unable to delete department! It is probably assigned to project");
+                alert.showAndWait();
+            });
         }
     }
 
     public void updateDepartment(
             String token,
             DepartmentWriteDto departmentWriteDto,
-            EditDepartmentHandler handler
+            CrudOperationResultHandler handler
     ) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<DepartmentWriteDto> request = new HttpEntity<>(departmentWriteDto, headers);
@@ -88,5 +98,4 @@ public class DepartmentRestClient {
             handler.handle();
         }
     }
-
 }
