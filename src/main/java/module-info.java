@@ -10,7 +10,8 @@ module io.github.danielzyla.pdcaclient {
     exports io.github.danielzyla.pdcaclient;
     exports io.github.danielzyla.pdcaclient.controller;
     exports io.github.danielzyla.pdcaclient.model;
-    exports io.github.danielzyla.pdcaclient.dto to com.fasterxml.jackson.databind;
     opens io.github.danielzyla.pdcaclient.controller to javafx.fxml;
     opens io.github.danielzyla.pdcaclient.model to javafx.base;
+    exports io.github.danielzyla.pdcaclient.dto;
+    opens io.github.danielzyla.pdcaclient.dto to javafx.base;
 }

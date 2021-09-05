@@ -72,9 +72,9 @@ public class CreateEmployeeController implements Initializable {
         Thread thread = new Thread(() -> {
             try {
                 List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(getToken());
-                Platform.runLater(() -> {
-                    departmentListComboBox.setItems(FXCollections.observableArrayList(departmentReadDtoList));
-                });
+                Platform.runLater(() ->
+                    departmentListComboBox.setItems(FXCollections.observableArrayList(departmentReadDtoList))
+                );
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,7 +102,7 @@ public class CreateEmployeeController implements Initializable {
                                 e.printStackTrace();
                             }
                         }));
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });

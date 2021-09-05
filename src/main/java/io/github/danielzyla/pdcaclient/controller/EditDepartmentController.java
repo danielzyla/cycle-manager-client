@@ -65,7 +65,7 @@ public class EditDepartmentController implements Initializable {
                                     }
                                 })
                         );
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });

@@ -58,6 +58,11 @@ public class DeleteDepartmentController implements Initializable {
             });
             thread.setDaemon(true);
             thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
     }
 

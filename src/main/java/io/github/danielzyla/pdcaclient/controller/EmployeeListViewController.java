@@ -135,15 +135,13 @@ public class EmployeeListViewController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(
                         "/io/github/danielzyla/pdcaclient/fxml/edit-employee.fxml"
                 ));
+                EditEmployeeController controller = new EditEmployeeController(getToken(), selectedEmployee, this);
+                loader.setController(controller);
                 Parent parent = loader.load();
                 Scene scene = new Scene(parent, 400, 500);
                 editEmployeeStage.setScene(scene);
                 editEmployeeStage.initModality(Modality.APPLICATION_MODAL);
                 editEmployeeStage.initStyle(StageStyle.UNDECORATED);
-                EditEmployeeController controller = loader.getController();
-                controller.setToken(getToken());
-                controller.loadEmployeeWriteApiDto(selectedEmployee);
-                controller.setController(this);
                 editEmployeeStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

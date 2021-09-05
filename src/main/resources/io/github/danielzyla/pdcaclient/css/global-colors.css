@@ -2,4 +2,7 @@
     -fx-primary-blue: rgba(125, 173, 216);
     -fx-primary-grey: #777;
     -fx-secondary-grey: #ccc;
+    -fx-primary-red: rgba(255, 153, 153);
+    -fx-primary-yellow: rgba(255, 255, 153);
+    -fx-primary-green: rgba(153, 230, 153);
 }

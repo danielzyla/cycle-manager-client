@@ -35,8 +35,6 @@ public class EditEmployeeController implements Initializable {
     @FXML
     private TextField employeeEmailTextField;
     @FXML
-    private Button departmentsButton;
-    @FXML
     private ComboBox<DepartmentReadDto> departmentListComboBox;
     @FXML
     private Button editButton;
@@ -45,20 +43,27 @@ public class EditEmployeeController implements Initializable {
 
     private final EmployeeRestClient employeeRestClient;
     private final DepartmentRestClient departmentRestClient;
-    private String token;
-    private EmployeeTableModel selectedEmployee;
-    private EmployeeListViewController employeeListViewController;
+    private final String token;
+    private final EmployeeTableModel selectedEmployee;
+    private final EmployeeListViewController employeeListViewController;
     private final static Pattern PATTERN = Pattern.compile("^[\\p{L}0-9\\s]+$");
 
-    public EditEmployeeController() {
+    public EditEmployeeController(
+            String token,
+            EmployeeTableModel selectedEmployee,
+            EmployeeListViewController employeeListViewController) {
         this.employeeRestClient = new EmployeeRestClient();
         this.departmentRestClient = new DepartmentRestClient();
+        this.token = token;
+        this.selectedEmployee = selectedEmployee;
+        this.employeeListViewController = employeeListViewController;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initializeEditButton();
+        loadEmployeeWriteApiDto();
         loadDepartmentList();
+        initializeEditButton();
         initializeCancelButton();
     }
 
@@ -74,7 +79,7 @@ public class EditEmployeeController implements Initializable {
                 Thread thread = new Thread(() -> {
                     try {
                         employeeRestClient.updateEmployee(
-                                getToken(),
+                                this.token,
                                 employeeWriteApiDto,
                                 () -> Platform.runLater(() -> {
                                     getStage().close();
@@ -85,7 +90,7 @@ public class EditEmployeeController implements Initializable {
                                     }
                                 })
                         );
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });
@@ -102,7 +107,11 @@ public class EditEmployeeController implements Initializable {
 
     private boolean validateName() {
         Matcher matcher = PATTERN.matcher(employeeNameTextField.getText());
-        if (matcher.find() && matcher.group().equals(employeeNameTextField.getText()) && !employeeNameTextField.getText().isEmpty()) {
+        if (
+                matcher.find()
+                        && matcher.group().equals(employeeNameTextField.getText())
+                        && !employeeNameTextField.getText().isEmpty()
+        ) {
             return true;
         } else {
             validationAlert("employee name");
@@ -150,50 +159,37 @@ public class EditEmployeeController implements Initializable {
     }
 
     private void loadDepartmentList() {
-        departmentsButton.setOnAction(loadDepartments -> {
-            Thread thread = new Thread(() -> {
-                try {
-                    List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(getToken());
-                    Platform.runLater(() -> {
-                        departmentListComboBox.setItems(FXCollections.observableArrayList(departmentReadDtoList));
-                        ObservableList<DepartmentReadDto> items = departmentListComboBox.getItems();
+        Thread thread = new Thread(() -> {
+            try {
+                List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(this.token);
+                Platform.runLater(() -> {
+                    departmentListComboBox.setItems(FXCollections.observableArrayList(departmentReadDtoList));
+                    ObservableList<DepartmentReadDto> items = departmentListComboBox.getItems();
+                    if (selectedEmployee.getDepartment() != null) {
                         for (DepartmentReadDto item : items) {
                             if (selectedEmployee.getDepartment().getId() == item.getId()) {
                                 departmentListComboBox.getSelectionModel().select(item);
                             }
                         }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.setDaemon(true);
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
+                    }
+                });
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+        thread.setDaemon(true);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void loadEmployeeWriteApiDto(EmployeeTableModel selectedEmployee) {
-        this.selectedEmployee = selectedEmployee;
+    public void loadEmployeeWriteApiDto() {
         employeeNameTextField.setText(selectedEmployee.getName());
         employeeSurnameTextField.setText(selectedEmployee.getSurname());
         employeeEmailTextField.setText(selectedEmployee.getEmail());
-    }
-
-    public void setController(EmployeeListViewController employeeListViewController) {
-        this.employeeListViewController = employeeListViewController;
     }
 
     private void initializeCancelButton() {

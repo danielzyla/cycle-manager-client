@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="cycleViewBorderPane" minWidth="1024.0" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <GridPane BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+         </rowConstraints>
+         <BorderPane.margin>
+            <Insets bottom="10.0" top="10.0"/>
+         </BorderPane.margin>
+         <Label styleClass="info-label" text="start time:">
+            <GridPane.margin>
+               <Insets right="10.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label styleClass="info-label" text="end time:" GridPane.rowIndex="1">
+            <GridPane.margin>
+               <Insets right="10.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label fx:id="startTimeLabel" styleClass="info-label" GridPane.columnIndex="1">
+            <GridPane.margin>
+               <Insets left="10.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label fx:id="endTimeLabel" styleClass="info-label" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <GridPane.margin>
+               <Insets left="10.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label styleClass="info-label" text="status:" GridPane.rowIndex="2">
+            <GridPane.margin>
+               <Insets right="10.0"/>
+            </GridPane.margin>
+         </Label>
+         <Label fx:id="statusLabel" styleClass="info-label" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <GridPane.margin>
+               <Insets left="10.0"/>
+            </GridPane.margin>
+         </Label>
+      </GridPane>
+   </top>
+   <stylesheets>
+      <URL value="@../css/pop-up-window.css" />
+      <URL value="@../css/global-colors.css" />
+   </stylesheets>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <opaqueInsets>
+            <Insets left="10.0" right="10.0"/>
+         </opaqueInsets>
+         <padding>
+            <Insets left="10.0" right="10.0"/>
+         </padding>
+         <TitledPane fx:id="planPhaseTitlePane" animated="false" expanded="false" text="PLAN">
+            <VBox.margin>
+               <Insets left="10.0" right="20.0"/>
+            </VBox.margin>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="plan-phase-VBox">
+               <stylesheets>
+                  <URL value="@../css/cycle-view.css"/>
+                  <URL value="@../css/global-colors.css"/>
+               </stylesheets>
+               <GridPane minHeight="140.0">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <Label text="start time:">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="planStartTimeLabel" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="status:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="planStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="end time:" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="planEndTimeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Button fx:id="editPlanPhaseButton" mnemonicParsing="false" styleClass="edit-plan-btn"
+                          text="Edit" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" right="10.0" top="5.0"/>
+                     </GridPane.margin>
+                  </Button>
+               </GridPane>
+               <Label text="Team:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="teamTextArea" editable="false" minHeight="150.0"/>
+               <Label text="Problem:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="problemTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Current situation analysis:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="currentSituationTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Goal:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="goalTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Root cause identification:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="rootCauseTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Optimal solution choice:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="optimalSolutionTextArea" editable="false" minHeight="150.0" wrapText="true">
+                  <VBox.margin>
+                     <Insets/>
+                  </VBox.margin>
+               </TextArea>
+            </VBox>
+         </TitledPane>
+         <TitledPane fx:id="doPhaseTitlePane" animated="false" expanded="false" text="DO">
+            <VBox.margin>
+               <Insets left="10.0" right="20.0"/>
+            </VBox.margin>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="do-phase-VBox">
+               <stylesheets>
+                  <URL value="@../css/cycle-view.css"/>
+                  <URL value="@../css/global-colors.css"/>
+               </stylesheets>
+               <GridPane minHeight="160.0">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <Label text="start time:">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="doStartTimeLabel" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="status:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="doStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="end time:" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="doEndTimeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Button fx:id="editDoPhaseButton" mnemonicParsing="false" styleClass="edit-do-btn"
+                          text="Edit" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" right="10.0" top="5.0"/>
+                     </GridPane.margin>
+                  </Button>
+               </GridPane>
+               <Label text="Description of solution implementation:">
+                  <VBox.margin>
+                     <Insets bottom="5.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+                  <padding>
+                     <Insets left="10.0" top="10.0"/>
+                  </padding>
+               </Label>
+               <TextArea fx:id="doPreparationTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Separator prefWidth="200.0">
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="10.0"/>
+                  </VBox.margin>
+               </Separator>
+               <GridPane minHeight="50.0">
+                  <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <Label text="TASKS:">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Button fx:id="editDoPhaseTaskButton" mnemonicParsing="false" styleClass="edit-task-btn"
+                          text="Edit task" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets/>
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="deleteDoPhaseTaskButton" mnemonicParsing="false" styleClass="delete-task-btn"
+                          text="Delete task" GridPane.columnIndex="3">
+                     <GridPane.margin>
+                        <Insets/>
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="newDoPhaseTaskButton" mnemonicParsing="false" styleClass="new-task-btn"
+                          text="New task" GridPane.columnIndex="1"/>
+               </GridPane>
+               <TableView fx:id="doPhaseTaskTableView" minHeight="250.0">
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                  </columnResizePolicy>
+               </TableView>
+            </VBox>
+         </TitledPane>
+         <TitledPane fx:id="checkPhaseTitlePane" animated="false" expanded="false" text="CHECK">
+            <VBox.margin>
+               <Insets left="10.0" right="20.0"/>
+            </VBox.margin>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="check-phase-VBox">
+               <stylesheets>
+                  <URL value="@../css/cycle-view.css"/>
+                  <URL value="@../css/global-colors.css"/>
+               </stylesheets>
+               <GridPane minHeight="160.0">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <Label text="start time:">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="checkStartTimeLabel" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="status:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="checkStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="end time:" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="checkEndTimeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Button fx:id="editCheckPhaseButton" mnemonicParsing="false" styleClass="edit-check-btn"
+                          text="Edit" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" right="10.0" top="5.0"/>
+                     </GridPane.margin>
+                  </Button>
+               </GridPane>
+               <Label text="Results of trials and conclusions:">
+                  <VBox.margin>
+                     <Insets top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+                  <padding>
+                     <Insets left="10.0" top="10.0"/>
+                  </padding>
+               </Label>
+               <TextArea fx:id="checkResultsTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Target review, financial effects, achievemetns:">
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+                  <padding>
+                     <Insets left="10.0" top="10.0"/>
+                  </padding>
+               </Label>
+               <TextArea fx:id="checkTargetTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <Label text="Further improvement areas:">
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+                  <padding>
+                     <Insets left="10.0" top="10.0"/>
+                  </padding>
+               </Label>
+               <TextArea fx:id="checkIfImproveTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+            </VBox>
+         </TitledPane>
+         <TitledPane fx:id="actPhaseTitlePane" animated="false" expanded="false" text="ACT">
+            <padding>
+               <Insets bottom="20.0"/>
+            </padding>
+            <VBox.margin>
+               <Insets left="10.0" right="20.0"/>
+            </VBox.margin>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="act-phase-VBox">
+               <stylesheets>
+                  <URL value="@../css/cycle-view.css"/>
+                  <URL value="@../css/global-colors.css"/>
+               </stylesheets>
+               <GridPane minHeight="200.0">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <Label text="start time:">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="actStartTimeLabel" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="status:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="actStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="end time:" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="actEndTimeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="next cycle:" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="actNextCycleStatusLabel" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Button fx:id="editActPhaseButton" mnemonicParsing="false" styleClass="edit-act-btn"
+                          text="Edit" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" top="5.0"/>
+                     </GridPane.margin>
+                  </Button>
+               </GridPane>
+               <Label text="Solution implementation possibilites assessment:">
+                  <VBox.margin>
+                     <Insets bottom="5.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+                  <padding>
+                     <Insets left="10.0" top="10.0"/>
+                  </padding>
+               </Label>
+               <TextArea fx:id="actAssessmentTextArea" editable="false" minHeight="150.0" wrapText="true"/>
+               <GridPane minHeight="50.0">
+                  <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <Label text="TASKS:">
+                     <padding>
+                        <Insets left="10.0" top="10.0"/>
+                     </padding>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Button fx:id="editActPhaseTaskButton" mnemonicParsing="false" styleClass="edit-task-btn"
+                          text="Edit task" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets/>
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="deleteActPhaseTaskButton" mnemonicParsing="false" styleClass="delete-task-btn"
+                          text="Delete task" GridPane.columnIndex="3">
+                     <GridPane.margin>
+                        <Insets/>
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="newActPhaseTaskButton" mnemonicParsing="false" styleClass="new-task-btn"
+                          text="New task" GridPane.columnIndex="1"/>
+               </GridPane>
+               <TableView fx:id="actPhaseTaskTableView" minHeight="250.0">
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                  </columnResizePolicy>
+                  <VBox.margin>
+                     <Insets bottom="10.0"/>
+                  </VBox.margin>
+               </TableView>
+            </VBox>
+         </TitledPane>
+      </VBox>
+   </center>
+   <bottom>
+      <Label styleClass="info-label" text="© io.github.danielzyla 2021" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+</BorderPane>

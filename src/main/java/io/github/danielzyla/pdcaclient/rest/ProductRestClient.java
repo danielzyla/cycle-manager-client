@@ -41,7 +41,7 @@ public class ProductRestClient {
             String token,
             ProductWriteDto productWriteDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<ProductWriteDto> request = new HttpEntity<>(productWriteDto, headers);
         ResponseEntity<ProductReadDto> productReadDtoResponseEntity = restTemplate.exchange(
@@ -69,7 +69,7 @@ public class ProductRestClient {
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 handler.handle();
             }
-        } catch (HttpClientErrorException.Conflict e) {
+        } catch (HttpClientErrorException.Conflict | InterruptedException e) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Conflict !");
@@ -84,7 +84,7 @@ public class ProductRestClient {
             String token,
             ProductWriteDto productWriteDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<ProductWriteDto> request = new HttpEntity<>(productWriteDto, headers);
         ResponseEntity<Void> response = restTemplate.exchange(

@@ -50,7 +50,7 @@ public class DeleteProjectController implements Initializable {
                             e.printStackTrace();
                         }
                     }));
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             });

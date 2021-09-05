@@ -22,11 +22,11 @@
     -fx-background-color: -fx-primary-grey;
 }
 
-.gridPaneLabel, .createButton, .editButton, .deleteButton, .exitButton {
+.gridPaneLabel, .createButton, .editButton, .cycleButton, .deleteButton, .exitButton, .nextCycleButton {
     -fx-background-color: -fx-primary-grey;
     -fx-text-fill: white;
 }
 
-.createButton:hover, .editButton:hover, .deleteButton:hover, .exitButton:hover {
+.createButton:hover, .editButton:hover, .cycleButton:hover, .deleteButton:hover, .exitButton:hover, .nextCycleButton:hover {
     -fx-background-color: -fx-primary-blue;
 }

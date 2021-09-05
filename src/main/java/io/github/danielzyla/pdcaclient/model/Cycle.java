@@ -11,4 +11,10 @@ public class Cycle {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean complete;
+    private boolean nextCycle;
+
+    @Override
+    public String toString() {
+        return cycleName;
+    }
 }

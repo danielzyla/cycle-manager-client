@@ -46,6 +46,8 @@ public class ProjectListViewController implements Initializable {
     @FXML
     private Button editButton;
     @FXML
+    private Button cycleButton;
+    @FXML
     private Button deleteButton;
 
     private final ProjectRestClient projectRestClient;
@@ -62,7 +64,32 @@ public class ProjectListViewController implements Initializable {
         setProjectListTableView();
         createButton.setOnAction(createProjectAction -> initializeCreateNewProjectStage());
         editButton.setOnAction(editAction -> initializeEditProjectStage());
+        cycleButton.setOnAction(showCycle -> initializeShowCycleStage());
         deleteButton.setOnAction(deleteAction -> initializeDeleteProjectStage());
+    }
+
+    private void initializeShowCycleStage() {
+        ProjectTableModel selectedProject = projectListTableView.getSelectionModel().getSelectedItem();
+        try {
+            Stage createCycleStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/io/github/danielzyla/pdcaclient/fxml/show-cycle-list.fxml"
+            ));
+            ShowCycleListController controller = new ShowCycleListController(selectedProject, getToken());
+            loader.setController(controller);
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setStyle("-fx-background: rgba(125, 173, 216);");
+            Parent parent = loader.load();
+            scrollPane.setContent(parent);
+            Scene scene = new Scene(scrollPane, 1024, 768);
+            createCycleStage.setScene(scene);
+            createCycleStage.setWidth(scene.getWidth());
+            scrollPane.setFitToWidth(true);
+            createCycleStage.initModality(Modality.WINDOW_MODAL);
+            createCycleStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initializeCreateNewProjectStage() {
@@ -238,15 +265,13 @@ public class ProjectListViewController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(
                         "/io/github/danielzyla/pdcaclient/fxml/edit-project.fxml"
                 ));
+                EditProjectController controller = new EditProjectController(getToken(), selectedProject, this);
+                loader.setController(controller);
                 Parent parent = loader.load();
                 Scene scene = new Scene(parent, 600, 500);
                 editProjectStage.setScene(scene);
                 editProjectStage.initModality(Modality.APPLICATION_MODAL);
                 editProjectStage.initStyle(StageStyle.UNDECORATED);
-                EditProjectController controller = loader.getController();
-                controller.setToken(getToken());
-                controller.loadProjectWriteApiDto(selectedProject);
-                controller.setController(this);
                 editProjectStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

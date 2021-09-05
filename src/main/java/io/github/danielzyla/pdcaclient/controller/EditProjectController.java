@@ -35,10 +35,6 @@ public class EditProjectController implements Initializable {
     @FXML
     private TextField projectCodeTextField;
     @FXML
-    private Button departmentListButton;
-    @FXML
-    private Button productListButton;
-    @FXML
     private ListView<DepartmentReadDto> departmentsListView;
     @FXML
     private ListView<ProductReadDto> productsListView;
@@ -50,29 +46,88 @@ public class EditProjectController implements Initializable {
     private final ProjectRestClient projectRestClient;
     private final DepartmentRestClient departmentRestClient;
     private final ProductRestClient productRestClient;
-    private String token;
-    private ProjectTableModel selectedProject;
-    private ProjectListViewController projectListViewController;
+    private final String token;
+    private final ProjectTableModel selectedProject;
+    private final ProjectListViewController projectListViewController;
     private final static Pattern PATTERN = Pattern.compile("\\A(?!\\s*\\Z).+");
 
-    public EditProjectController() {
+    public EditProjectController(
+            String token,
+            ProjectTableModel selectedProject,
+            ProjectListViewController projectListViewController
+    ) {
         this.departmentRestClient = new DepartmentRestClient();
         this.productRestClient = new ProductRestClient();
         this.projectRestClient = new ProjectRestClient();
+        this.token = token;
+        this.selectedProject = selectedProject;
+        this.projectListViewController = projectListViewController;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initializeEditButton();
+        loadProjectWriteApiDto();
         loadDepartmentList();
         loadProductList();
+        initializeEditButton();
         initializeCancelButton();
     }
 
-    public void loadProjectWriteApiDto(ProjectTableModel selectedProject) {
-        this.selectedProject = selectedProject;
+    public void loadProjectWriteApiDto() {
         projectNameTextField.setText(selectedProject.getProjectName());
         projectCodeTextField.setText(selectedProject.getProjectCode());
+    }
+
+    private void loadDepartmentList() {
+        Thread thread = new Thread(() -> {
+            try {
+                List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(this.token);
+                Platform.runLater(() -> {
+                    departmentsListView.setItems(FXCollections.observableArrayList(departmentReadDtoList));
+                    departmentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                    ObservableList<DepartmentReadDto> items = departmentsListView.getItems();
+                    for (DepartmentReadDto item : items) {
+                        for (Department dept : selectedProject.getDepartments()) {
+                            if (dept.getId() == item.getId()) {
+                                departmentsListView.getSelectionModel().select(item);
+                            }
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadProductList() {
+        Thread thread = new Thread(() -> {
+            try {
+                List<ProductReadDto> productReadDtoList = productRestClient.getProducts(this.token);
+                Platform.runLater(() -> {
+                    productsListView.setItems(FXCollections.observableArrayList(productReadDtoList));
+                    productsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                    ObservableList<ProductReadDto> items = productsListView.getItems();
+                    for (ProductReadDto item : items) {
+                        for (Product product : selectedProject.getProducts()) {
+                            if (product.getId() == item.getId()) {
+                                productsListView.getSelectionModel().select(item);
+                            }
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
     }
 
     private void initializeEditButton() {
@@ -87,7 +142,7 @@ public class EditProjectController implements Initializable {
                 Thread thread = new Thread(() -> {
                     try {
                         projectRestClient.updateProject(
-                                getToken(),
+                                this.token,
                                 projectWriteApiDto,
                                 () -> Platform.runLater(() -> {
                                     getStage().close();
@@ -98,7 +153,7 @@ public class EditProjectController implements Initializable {
                                     }
                                 })
                         );
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });
@@ -123,37 +178,6 @@ public class EditProjectController implements Initializable {
             selectedProducts.add(dto.getId());
         }
         return selectedProducts;
-    }
-
-    private void loadDepartmentList() {
-        departmentListButton.setOnAction(loadDepartments -> {
-            Thread thread = new Thread(() -> {
-                try {
-                    List<DepartmentReadDto> departmentReadDtoList = departmentRestClient.getDepartments(getToken());
-                    Platform.runLater(() -> {
-                        departmentsListView.setItems(FXCollections.observableArrayList(departmentReadDtoList));
-                        departmentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                        ObservableList<DepartmentReadDto> items = departmentsListView.getItems();
-                        for (DepartmentReadDto item : items) {
-                            for (Department dept : selectedProject.getDepartments()) {
-                                if (dept.getId() == item.getId()) {
-                                    departmentsListView.getSelectionModel().select(item);
-                                }
-                            }
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.setDaemon(true);
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private boolean validateProjectName() {
@@ -184,48 +208,11 @@ public class EditProjectController implements Initializable {
         alert.showAndWait();
     }
 
-    private void loadProductList() {
-        productListButton.setOnAction(loadProducts -> {
-            Thread thread = new Thread(() -> {
-                try {
-                    List<ProductReadDto> productReadDtoList = productRestClient.getProducts(getToken());
-                    Platform.runLater(() -> {
-                        productsListView.setItems(FXCollections.observableArrayList(productReadDtoList));
-                        productsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                        ObservableList<ProductReadDto> items = productsListView.getItems();
-                        for (ProductReadDto item : items) {
-                            for (Product product : selectedProject.getProducts()) {
-                                if (product.getId() == item.getId()) {
-                                    productsListView.getSelectionModel().select(item);
-                                }
-                            }
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
-        });
-    }
-
     private void initializeCancelButton() {
         cancelButton.setOnAction(cancelAction -> getStage().close());
     }
 
     private Stage getStage() {
         return (Stage) editProjectBorderPane.getScene().getWindow();
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setController(ProjectListViewController projectListViewController) {
-        this.projectListViewController = projectListViewController;
     }
 }

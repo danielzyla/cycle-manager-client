@@ -42,7 +42,7 @@ public class DepartmentRestClient {
             String token,
             DepartmentWriteDto departmentWriteDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<DepartmentWriteDto> request = new HttpEntity<>(departmentWriteDto, headers);
         ResponseEntity<DepartmentReadDto> departmentReadDtoResponseEntity = restTemplate.exchange(
@@ -70,12 +70,12 @@ public class DepartmentRestClient {
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 handler.handle();
             }
-        } catch (HttpClientErrorException.Conflict e) {
+        } catch (HttpClientErrorException.Conflict | InterruptedException e) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Conflict !");
                 alert.setHeaderText(null);
-                alert.setContentText("Unable to delete department! It is probably assigned to project");
+                alert.setContentText("Unable to delete department! It is most likely assigned to project");
                 alert.showAndWait();
             });
         }
@@ -85,7 +85,7 @@ public class DepartmentRestClient {
             String token,
             DepartmentWriteDto departmentWriteDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<DepartmentWriteDto> request = new HttpEntity<>(departmentWriteDto, headers);
         ResponseEntity<Void> response = restTemplate.exchange(

@@ -40,7 +40,7 @@ public class ProjectRestClient {
             String token,
             ProjectWriteApiDto projectWriteApiDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
         ResponseEntity<ProjectReadDto> projectReadDtoResponseEntity = restTemplate.exchange(
@@ -54,7 +54,11 @@ public class ProjectRestClient {
         } else throw new RuntimeException("can't save data transfer object: " + projectWriteApiDto);
     }
 
-    public void deleteProject(String token, Long projectId, CrudOperationResultHandler handler) throws IOException {
+    public void deleteProject(
+            String token,
+            Long projectId,
+            CrudOperationResultHandler handler
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -72,7 +76,7 @@ public class ProjectRestClient {
             String token,
             ProjectWriteApiDto projectWriteApiDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -84,5 +88,17 @@ public class ProjectRestClient {
         if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
             handler.handle();
         }
+    }
+
+    public ProjectReadDto getById(String token, Long projectId) throws IOException {
+        headers.setBearerAuth(token);
+        HttpEntity<Long> request = new HttpEntity<>(projectId, headers);
+        ResponseEntity<ProjectReadDto> projectReadDtoResponseEntity = restTemplate.exchange(
+                PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH + "/" + projectId,
+                HttpMethod.GET,
+                request,
+                ProjectReadDto.class
+        );
+        return projectReadDtoResponseEntity.getBody();
     }
 }

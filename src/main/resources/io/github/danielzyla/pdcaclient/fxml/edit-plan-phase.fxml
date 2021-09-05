@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="editPlanPhaseBorderPane" prefHeight="1024.0" prefWidth="1024.0" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <stylesheets>
+      <URL value="@../css/pop-up-window.css" />
+      <URL value="@../css/global-colors.css" />
+   </stylesheets>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <opaqueInsets>
+            <Insets left="10.0" right="10.0"/>
+         </opaqueInsets>
+         <padding>
+            <Insets left="10.0" right="10.0"/>
+         </padding>
+         <TitledPane fx:id="planPhaseTitlePane" animated="false" text="PLAN">
+            <VBox.margin>
+               <Insets left="10.0" right="10.0"/>
+            </VBox.margin>
+            <padding>
+               <Insets bottom="20.0" top="20.0"/>
+            </padding>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="plan-phase-VBox">
+               <stylesheets>
+                  <URL value="@../css/cycle-view.css"/>
+                  <URL value="@../css/global-colors.css"/>
+               </stylesheets>
+               <GridPane minHeight="100.0">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <Label text="start time:">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Label fx:id="planStartTimeLabel" text="Label" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0"/>
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="complete:" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="10.0"/>
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold Italic" size="13.0"/>
+                     </font>
+                  </Label>
+                  <Button fx:id="savePlanPhaseButton" mnemonicParsing="false" styleClass="edit-plan-btn"
+                          text="Save" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" right="10.0" top="5.0"/>
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="cancelEditPlanPhaseButton" mnemonicParsing="false" styleClass="cancel-btn"
+                          text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                  <CheckBox fx:id="planStatusCheckBox" mnemonicParsing="false" GridPane.columnIndex="1"
+                            GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="10.0"/>
+                     </padding>
+                  </CheckBox>
+               </GridPane>
+               <Label text="Team:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <ListView fx:id="employeeListView" minHeight="150.0"/>
+               <Label text="Problem:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="problemTextArea" minHeight="150.0" wrapText="true"/>
+               <Label text="Current situation analysis:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="currentSituationTextArea" minHeight="150.0" wrapText="true"/>
+               <Label text="Goal:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="goalTextArea" minHeight="150.0" wrapText="true"/>
+               <Label text="Root cause identification:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="rootCauseTextArea" minHeight="150.0" wrapText="true"/>
+               <Label text="Optimal solution choice:">
+                  <VBox.margin>
+                     <Insets left="10.0" top="10.0"/>
+                  </VBox.margin>
+                  <font>
+                     <Font name="System Bold Italic" size="13.0"/>
+                  </font>
+               </Label>
+               <TextArea fx:id="optimalSolutionTextArea" minHeight="150.0" wrapText="true">
+                  <VBox.margin>
+                     <Insets/>
+                  </VBox.margin>
+               </TextArea>
+            </VBox>
+         </TitledPane>
+      </VBox>
+   </center>
+   <bottom>
+      <Label styleClass="info-label" text="© io.github.danielzyla 2021" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="20.0" top="10.0" />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+</BorderPane>

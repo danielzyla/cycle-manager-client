@@ -97,7 +97,7 @@ public class CreateProjectController implements Initializable {
                                 e.printStackTrace();
                             }
                         }));
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });

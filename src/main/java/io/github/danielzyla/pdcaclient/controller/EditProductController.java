@@ -72,7 +72,7 @@ public class EditProductController implements Initializable {
                                             }
                                         })
                                 );
-                            } catch (IOException e) {
+                            } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
                         });

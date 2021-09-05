@@ -5,7 +5,10 @@ import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.EmployeeReadDto;
 import io.github.danielzyla.pdcaclient.dto.EmployeeWriteApiDto;
 import io.github.danielzyla.pdcaclient.handler.CrudOperationResultHandler;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -40,7 +43,7 @@ public class EmployeeRestClient {
             String token,
             EmployeeWriteApiDto employeeWriteApiDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<EmployeeWriteApiDto> request = new HttpEntity<>(employeeWriteApiDto, headers);
         ResponseEntity<EmployeeReadDto> employeeReadDtoResponseEntity = restTemplate.exchange(
@@ -57,22 +60,33 @@ public class EmployeeRestClient {
     public void deleteEmployee(String token, Long employeeId, CrudOperationResultHandler handler) throws IOException {
         headers.setBearerAuth(token);
         HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<Void> response = restTemplate.exchange(
-                PropertyProvider.getRestAppUrl() + GET_EMPLOYEES_URL_PATH + "?id=" + employeeId,
-                HttpMethod.DELETE,
-                request,
-                Void.class
-        );
-        if (response.getStatusCode().equals(HttpStatus.OK)) {
-            handler.handle();
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                    PropertyProvider.getRestAppUrl() + GET_EMPLOYEES_URL_PATH + "?id=" + employeeId,
+                    HttpMethod.DELETE,
+                    request,
+                    Void.class
+            );
+            if (response.getStatusCode().equals(HttpStatus.OK)) {
+                handler.handle();
+            }
+        } catch (HttpClientErrorException.Conflict | InterruptedException e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Conflict !");
+                alert.setHeaderText(null);
+                alert.setContentText("Unable to delete employee item ! It is most likely assigned to project");
+                alert.showAndWait();
+            });
         }
+
     }
 
     public void updateEmployee(
             String token,
             EmployeeWriteApiDto employeeWriteApiDto,
             CrudOperationResultHandler handler
-    ) throws IOException {
+    ) throws IOException, InterruptedException {
         headers.setBearerAuth(token);
         HttpEntity<EmployeeWriteApiDto> request = new HttpEntity<>(employeeWriteApiDto, headers);
         ResponseEntity<Void> response = restTemplate.exchange(

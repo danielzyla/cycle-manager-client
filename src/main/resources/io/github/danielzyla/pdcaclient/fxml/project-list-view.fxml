@@ -55,6 +55,11 @@
                         <Insets left="10.0" right="20.0" />
                     </HBox.margin>
                 </Button>
+                <Button fx:id="cycleButton" mnemonicParsing="false" styleClass="cycleButton" text="Cycle">
+                    <HBox.margin>
+                        <Insets left="10.0" right="20.0" />
+                    </HBox.margin>
+                </Button>
                 <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="deleteButton" text="Delete">
                     <HBox.margin>
                         <Insets left="10.0" right="20.0" />

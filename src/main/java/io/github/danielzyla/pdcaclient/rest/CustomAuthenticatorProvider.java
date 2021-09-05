@@ -3,8 +3,13 @@ package io.github.danielzyla.pdcaclient.rest;
 import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.UserWriteDto;
 import io.github.danielzyla.pdcaclient.handler.AuthenticationResultHandler;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 public class CustomAuthenticatorProvider implements Authenticator {
 
@@ -25,8 +30,14 @@ public class CustomAuthenticatorProvider implements Authenticator {
                         String.class
                 );
                 authenticationResultHandler.handle(authenticationResponse.getBody());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (HttpClientErrorException.Forbidden | IOException e) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Bad credentials !");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Invalid username or password !");
+                    alert.showAndWait();
+                });
             }
         });
         authenticationThread.setDaemon(true);
