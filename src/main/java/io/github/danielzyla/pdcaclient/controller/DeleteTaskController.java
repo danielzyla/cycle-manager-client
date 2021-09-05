@@ -54,12 +54,23 @@ public class DeleteTaskController implements Initializable {
                     selectedTask.getId(),
                     () -> Platform.runLater(() -> {
                         getStage().close();
-                        cycleViewController.setDoPhaseReadDto(null);
-                        cycleViewController.clearDoPhaseTaskTableView();
-                        try {
-                            cycleViewController.initializeDoPhaseViewData();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (selectedTask.getTaskClass().equals("DoPhaseTask")) {
+                            cycleViewController.setDoPhaseReadDto(null);
+                            cycleViewController.clearDoPhaseTaskTableView();
+                            try {
+                                cycleViewController.initializeDoPhaseViewData();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (selectedTask.getTaskClass().equals("ActPhaseTask")) {
+                            cycleViewController.setActPhaseReadDto(null);
+                            cycleViewController.clearActPhaseTaskTableView();
+                            try {
+                                cycleViewController.initializeActPhaseViewData();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     })));
             thread.setDaemon(true);
