@@ -85,8 +85,8 @@ public class CreateProjectController implements Initializable {
                 ProjectWriteApiDto projectWriteApiDto = new ProjectWriteApiDto();
                 projectWriteApiDto.setProjectName(projectNameTextField.getText());
                 projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
-                projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
-                projectWriteApiDto.setProductsIds(getProductsIds());
+                projectWriteApiDto.setDepartmentIds(getDepartmentsIds());
+                projectWriteApiDto.setProductIds(getProductsIds());
                 Thread thread = new Thread(() -> {
                     try {
                         projectRestClient.saveProject(getToken(), projectWriteApiDto, () -> Platform.runLater(() -> {

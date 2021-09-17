@@ -137,8 +137,8 @@ public class EditProjectController implements Initializable {
                 projectWriteApiDto.setId(selectedProject.getId());
                 projectWriteApiDto.setProjectName(projectNameTextField.getText());
                 projectWriteApiDto.setProjectCode(projectCodeTextField.getText());
-                projectWriteApiDto.setDepartmentsIds(getDepartmentsIds());
-                projectWriteApiDto.setProductsIds(getProductsIds());
+                projectWriteApiDto.setDepartmentIds(getDepartmentsIds());
+                projectWriteApiDto.setProductIds(getProductsIds());
                 Thread thread = new Thread(() -> {
                     try {
                         projectRestClient.updateProject(

@@ -25,7 +25,7 @@ public class ProjectRestClient {
 
     public List<ProjectReadDto> getProjects(String token) throws IOException {
         headers.setBearerAuth(token);
-        HttpEntity<ProjectReadDto> request = new HttpEntity<>(headers);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<ProjectReadDto[]> projects =
                 restTemplate.exchange(
                         PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH,
