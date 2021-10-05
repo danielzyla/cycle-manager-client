@@ -19,7 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,11 +56,14 @@ public class ProjectListViewController implements Initializable {
         this.projectRestClient = new ProjectRestClient();
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         nameLabel.setText("Project list");
-        setProjectListTableView();
+        try {
+            setProjectListTableView();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         createButton.setOnAction(createProjectAction -> initializeCreateNewProjectStage());
         editButton.setOnAction(editAction -> initializeEditProjectStage());
         cycleButton.setOnAction(showCycle -> initializeShowCycleStage());
@@ -112,6 +114,7 @@ public class ProjectListViewController implements Initializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void setProjectListTableView() throws InterruptedException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 

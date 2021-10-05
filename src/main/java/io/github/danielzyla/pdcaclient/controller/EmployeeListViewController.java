@@ -17,7 +17,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,16 +49,20 @@ public class EmployeeListViewController implements Initializable {
         this.employeeRestClient = new EmployeeRestClient();
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         nameLabel.setText("Employee list");
-        setEmployeeListTableView();
+        try {
+            setEmployeeListTableView();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         createButton.setOnAction(createProjectAction -> initializeCreateNewEmployeeStage());
         editButton.setOnAction(editAction -> initializeEditEmployeeStage());
         deleteButton.setOnAction(deleteAction -> initializeDeleteEmployeeStage());
     }
 
+    @SuppressWarnings("unchecked")
     private void setEmployeeListTableView() throws InterruptedException {
         TableColumn<EmployeeTableModel, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

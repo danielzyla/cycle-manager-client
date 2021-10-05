@@ -14,7 +14,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +52,6 @@ public class CreateEmployeeController implements Initializable {
         this.departmentRestClient = new DepartmentRestClient();
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeCancelButton();
@@ -141,7 +139,7 @@ public class CreateEmployeeController implements Initializable {
         if (departmentListComboBox.getSelectionModel().getSelectedItem() != null) {
             return true;
         } else {
-            validationAlert("email address");
+            validationAlert("department");
             return false;
         }
     }

@@ -1,6 +1,7 @@
 package io.github.danielzyla.pdcaclient.controller;
 
 import io.github.danielzyla.pdcaclient.dto.UserWriteDto;
+import io.github.danielzyla.pdcaclient.factory.PopupFactory;
 import io.github.danielzyla.pdcaclient.rest.CustomAuthenticatorProvider;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
 
     private final CustomAuthenticatorProvider authenticatorProvider;
+    private final PopupFactory popupFactory;
     @FXML
     private AnchorPane loginAnchorPane;
     @FXML
@@ -35,6 +37,7 @@ public class LoginController implements Initializable {
 
     public LoginController() {
         this.authenticatorProvider = new CustomAuthenticatorProvider();
+        this.popupFactory = new PopupFactory();
     }
 
     @Override
@@ -54,6 +57,8 @@ public class LoginController implements Initializable {
     }
 
     private void performAuthentication() throws FailedLoginException {
+        Stage waitingPopupStage = popupFactory.createWaitingPopupStage("connecting to the server...");
+        waitingPopupStage.show();
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         UserWriteDto user = new UserWriteDto();
@@ -64,13 +69,15 @@ public class LoginController implements Initializable {
                 (token) -> Platform.runLater(
                         () -> {
                             try {
+                                waitingPopupStage.close();
                                 openMainAppWindow(token);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             getStage().close();
                         }
-                )
+                ),
+                waitingPopupStage
         );
     }
 

@@ -26,7 +26,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -152,14 +151,17 @@ public class CycleViewController implements Initializable {
         this.showCycleListController = showCycleListController;
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeCycleStatusData();
-        initializePlanPhaseViewData();
-        initializeDoPhaseViewData();
-        initializeCheckPhaseViewData();
-        initializeActPhaseViewData();
+        try {
+            initializePlanPhaseViewData();
+            initializeDoPhaseViewData();
+            initializeCheckPhaseViewData();
+            initializeActPhaseViewData();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     void initializeCycleStatusData() {
@@ -356,6 +358,7 @@ public class CycleViewController implements Initializable {
         }
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void initializeDoPhaseTaskTableView() throws InterruptedException {
         doPhaseTaskTableView.getColumns().addAll(
                 setStartTimeTableColumn(),
@@ -600,6 +603,7 @@ public class CycleViewController implements Initializable {
         }
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void initializeActPhaseTaskTableView() throws InterruptedException {
         actPhaseTaskTableView.getColumns().addAll(
                 setStartTimeTableColumn(),

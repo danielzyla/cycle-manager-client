@@ -15,8 +15,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.SneakyThrows;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,17 +44,20 @@ public class DepartmentListViewController implements Initializable {
         this.departmentRestClient = new DepartmentRestClient();
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         nameLabel.setText("Department list");
-        setDepartmentListTableView();
+        try {
+            setDepartmentListTableView();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         createButton.setOnAction(createDepartmentAction -> initializeCreateNewDepartmentStage());
         editButton.setOnAction(editAction -> initializeEditDepartmentStage());
         deleteButton.setOnAction(deleteAction -> initializeDeleteDepartmentStage());
     }
 
-
+    @SuppressWarnings("unchecked")
     private void setDepartmentListTableView() throws InterruptedException {
         TableColumn<DepartmentTableModel, String> departmentName = new TableColumn<>("Name");
         departmentName.setCellValueFactory(new PropertyValueFactory<>("deptName"));

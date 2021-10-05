@@ -5,6 +5,7 @@ import io.github.danielzyla.pdcaclient.dto.UserWriteDto;
 import io.github.danielzyla.pdcaclient.handler.AuthenticationResultHandler;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +22,7 @@ public class CustomAuthenticatorProvider implements Authenticator {
     }
 
     @Override
-    public void authenticate(final UserWriteDto user, AuthenticationResultHandler authenticationResultHandler) {
+    public void authenticate(final UserWriteDto user, AuthenticationResultHandler authenticationResultHandler, Stage waitingPopupStage) {
         Thread authenticationThread = new Thread(() -> {
             try {
                 ResponseEntity<String> authenticationResponse = restTemplate.postForEntity(
@@ -37,6 +38,7 @@ public class CustomAuthenticatorProvider implements Authenticator {
                     alert.setHeaderText(null);
                     alert.setContentText("Invalid username or password !");
                     alert.showAndWait();
+                    waitingPopupStage.close();
                 });
             }
         });

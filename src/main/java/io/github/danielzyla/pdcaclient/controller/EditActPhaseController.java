@@ -12,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,10 +55,13 @@ public class EditActPhaseController implements Initializable {
         this.showCycleListController = showCycleListController;
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadActPhaseData();
+        try {
+            loadActPhaseData();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         initializeSaveButton();
         initializeCancelButton();
     }
@@ -112,6 +114,7 @@ public class EditActPhaseController implements Initializable {
         });
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void initializeDoPhaseTaskTableView() throws InterruptedException {
         actPhaseTaskTableView.getColumns().addAll(
                 cycleViewController.setStartTimeTableColumn(),

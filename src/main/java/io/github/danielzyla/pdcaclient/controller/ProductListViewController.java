@@ -15,7 +15,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,16 +45,20 @@ public class ProductListViewController implements Initializable {
         this.productRestClient = new ProductRestClient();
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         nameLabel.setText("Product list");
-        setProductListTableView();
+        try {
+            setProductListTableView();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         createButton.setOnAction(createProductAction -> initializeCreateNewProductStage());
         editButton.setOnAction(editAction -> initializeEditProductStage());
         deleteButton.setOnAction(deleteAction -> initializeDeleteProductStage());
     }
 
+    @SuppressWarnings("unchecked")
     private void setProductListTableView() throws InterruptedException {
         TableColumn<ProductTableModel, String> productNameColumn = new TableColumn<>("Product name");
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));

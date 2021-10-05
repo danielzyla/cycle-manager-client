@@ -15,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,12 +54,15 @@ public class ShowCycleListController implements Initializable {
         this.token = token;
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         projectNameLabel.setText(selectedProject.getProjectName());
-        initializeNextCycleButton();
-        initializeCycleListView();
+        try {
+            initializeNextCycleButton();
+            initializeCycleListView();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         initializeSelectedCycleView();
     }
 

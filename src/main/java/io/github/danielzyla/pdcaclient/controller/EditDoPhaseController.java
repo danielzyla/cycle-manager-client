@@ -12,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,10 +51,13 @@ public class EditDoPhaseController implements Initializable {
         this.cycleViewController = cycleViewController;
     }
 
-    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadDoPhaseData();
+        try {
+            loadDoPhaseData();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         initializeSaveButton();
         initializeCancelButton();
     }
@@ -106,6 +108,7 @@ public class EditDoPhaseController implements Initializable {
         });
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void initializeDoPhaseTaskTableView() throws InterruptedException {
         doPhaseTaskTableView.getColumns().addAll(
                 cycleViewController.setStartTimeTableColumn(),
