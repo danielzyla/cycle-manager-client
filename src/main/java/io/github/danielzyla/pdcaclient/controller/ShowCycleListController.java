@@ -134,7 +134,6 @@ public class ShowCycleListController implements Initializable {
         thread.start();
         thread.join();
         cycleListView.setItems(data);
-        System.out.println("data" + data);
         cycleListView.getItems().sort(
                 ((cycle1, cycle2) ->
                         String.CASE_INSENSITIVE_ORDER.compare(cycle1.getCycleName(), cycle2.getCycleName()))
