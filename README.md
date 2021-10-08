@@ -33,6 +33,6 @@ Project is created with:
 ## Usage
 To run this project dedicated API is required. Currently, the compatible interface can be found here:
 ```
-https://pdca-cycle-manager.herokuapp.com
+https://pdca-cycle-manager.herokuapp.com/api
 ```
 The URL must be included in the properties of the application.

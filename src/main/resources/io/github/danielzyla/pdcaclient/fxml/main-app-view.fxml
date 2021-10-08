@@ -1,32 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="mainAppBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.danielzyla.pdcaclient.controller.MainController">
    <top>
        <MenuBar styleClass="menuBar" BorderPane.alignment="CENTER">
            <stylesheets>
-               <URL value="@../css/main-view.css"/>
-               <URL value="@../css/global-colors.css"/>
+               <URL value="@../css/main-view.css" />
+               <URL value="@../css/global-colors.css" />
            </stylesheets>
            <Menu mnemonicParsing="false" text="File">
                <Menu mnemonicParsing="false" text="Open...">
-                   <MenuItem fx:id="openProjectListMenuItem" mnemonicParsing="false" text="Project module"/>
-                   <MenuItem fx:id="openProductListMenuItem" mnemonicParsing="false" text="Product module"/>
-                   <MenuItem fx:id="openDepartmentListMenuItem" mnemonicParsing="false"
-                             text="Department module"/>
-                   <MenuItem fx:id="openEmployeeListMenuItem" mnemonicParsing="false" text="Employee module"/>
+                   <MenuItem fx:id="openProjectListMenuItem" mnemonicParsing="false" text="Project module" />
+                   <MenuItem fx:id="openProductListMenuItem" mnemonicParsing="false" text="Product module" />
+                   <MenuItem fx:id="openDepartmentListMenuItem" mnemonicParsing="false" text="Department module" />
+                   <MenuItem fx:id="openEmployeeListMenuItem" mnemonicParsing="false" text="Employee module" />
                </Menu>
-               <MenuItem fx:id="quitAppMenuItem" mnemonicParsing="false" text="Close"/>
+               <MenuItem fx:id="quitAppMenuItem" mnemonicParsing="false" text="Close" />
            </Menu>
        </MenuBar>
    </top>
    <center>
-      <Pane fx:id="viewPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+       <Pane fx:id="viewPane">
+           <VBox>
+               <Label text="CYCLE-MANAGER-CLIENT" textFill="#6b6b6b">
+                   <font>
+                       <Font size="30.0" />
+                   </font>
+                   <padding>
+                       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                   </padding>
+               </Label>
+               <ImageView pickOnBounds="true" preserveRatio="true">
+                   <VBox.margin>
+                       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                   </VBox.margin>
+                   <Image url="@../img/logo.png" />
+               </ImageView>
+               <Label text="To start click on File and open required module">
+                   <padding>
+                       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                   </padding>
+               </Label>
+           </VBox>
+       </Pane>
    </center>
 </BorderPane>

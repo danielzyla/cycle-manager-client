@@ -18,9 +18,9 @@
     </stylesheets>
     <Button fx:id="exitButton" layoutX="562.0" layoutY="14.0" mnemonicParsing="false" styleClass="exit-button" stylesheets="@../css/global-colors.css" text="X" />
     <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="40.0">
-        <Label styleClass="title" stylesheets="@../css/global-colors.css" text="Log in to PDCA-app">
+        <Label text="Log in to CYCLE-MANAGER-CLIENT" textFill="WHITE" wrapText="true">
             <font>
-                <Font size="31.0" />
+                <Font name="System Bold" size="26.0" />
             </font>
         </Label>
         <HBox alignment="CENTER_RIGHT" prefWidth="200.0" spacing="20.0">
