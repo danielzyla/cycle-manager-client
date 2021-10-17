@@ -5,7 +5,10 @@ import io.github.danielzyla.pdcaclient.config.PropertyProvider;
 import io.github.danielzyla.pdcaclient.dto.ProjectReadDto;
 import io.github.danielzyla.pdcaclient.dto.ProjectWriteApiDto;
 import io.github.danielzyla.pdcaclient.handler.CrudOperationResultHandler;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -77,14 +80,26 @@ public class ProjectRestClient {
             ProjectWriteApiDto projectWriteApiDto,
             CrudOperationResultHandler handler
     ) throws IOException, InterruptedException {
-        headers.setBearerAuth(token);
-        HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
-        ResponseEntity<Void> response = restTemplate.exchange(
-                PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH,
-                HttpMethod.PUT,
-                request,
-                Void.class
-        );
+        ResponseEntity<Void> response = null;
+        try {
+            headers.setBearerAuth(token);
+            HttpEntity<ProjectWriteApiDto> request = new HttpEntity<>(projectWriteApiDto, headers);
+            response = restTemplate.exchange(
+                    PropertyProvider.getRestAppUrl() + GET_PROJECTS_URL_PATH,
+                    HttpMethod.PUT,
+                    request,
+                    Void.class
+            );
+        } catch (HttpClientErrorException.Conflict e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Conflict !");
+                alert.setHeaderText(null);
+                alert.setContentText("The code or name exists already in the database ! \n Choose another.");
+                alert.showAndWait();
+            });
+        }
+        assert response != null;
         if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
             handler.handle();
         }

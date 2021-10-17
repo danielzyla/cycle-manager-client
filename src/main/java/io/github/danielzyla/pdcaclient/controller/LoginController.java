@@ -89,7 +89,7 @@ public class LoginController implements Initializable {
             ));
             Parent appRoot = loader.load();
             Scene scene = new Scene(appRoot, 1024, 768);
-            appStage.setTitle("pdca-App");
+            appStage.setTitle("CYCLE MANAGER - CLIENT");
             appStage.setScene(scene);
             MainController controller = loader.getController();
             controller.setToken(token);

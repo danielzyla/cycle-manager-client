@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -32,17 +33,30 @@ public class CustomAuthenticatorProvider implements Authenticator {
                 );
                 authenticationResultHandler.handle(authenticationResponse.getBody());
             } catch (HttpClientErrorException.Forbidden | IOException e) {
-                Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Bad credentials !");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Invalid username or password !");
-                    alert.showAndWait();
-                    waitingPopupStage.close();
-                });
+                Platform.runLater(() -> showErrorAlert(
+                        "Bad credentials !",
+                        "Invalid username or password !",
+                        waitingPopupStage
+                ));
+            } catch (ResourceAccessException e) {
+                Platform.runLater(() -> showErrorAlert(
+                        "No connection !",
+                        "Connection failed, check and try again",
+                        waitingPopupStage
+                ));
             }
         });
         authenticationThread.setDaemon(true);
         authenticationThread.start();
     }
+
+    private void showErrorAlert(String title, String text, Stage waitingPopupStage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        alert.showAndWait();
+        waitingPopupStage.close();
+    }
+
 }
