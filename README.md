@@ -36,3 +36,17 @@ To run this project dedicated API is required. Currently, the compatible interfa
 https://pdca-cycle-manager.herokuapp.com/api
 ```
 The URL must be included in the properties of the application.
+
+Prior registration in the application is required. Click [here](https://pdca-cycle-manager.herokuapp.com/signUp) to sign up.
+Each request to the REST application is made using a token obtained as a result of user authentication.
+After logging in, you can use the application until the token expires (up to 15 minutes).
+
+Four modules are available to user: Project, Product, Department, Employee. For each of them new entities can be created and saved in external database.
+<img src="/src/main/resources/io/github/danielzyla/pdcaclient/img/project-list.png">\
+In each module, the selected item can also be edited or deleted.
+<img src="/src/main/resources/io/github/danielzyla/pdcaclient/img/edit-project.png">\
+All the entities introduced within the modules can be further used and shared within Cycle which is sub-module of Project.
+All cycles created within a given project are available in the Cycle. They can be selected, viewed and edited. 
+<img src="/src/main/resources/io/github/danielzyla/pdcaclient/img/cycles-view.png">
+<img src="/src/main/resources/io/github/danielzyla/pdcaclient/img/cycle-edit.png">
+The cycles are created automatically and the cycle cannot be deleted. However, you can delete their contents as long as they are in "pending" status.
